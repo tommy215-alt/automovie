@@ -1,0 +1,16 @@
+# 動画・音声・素材の実体は git に入れない
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.wav
+*.mp3
+*.m4a
+videos/*/assets/
+videos/*/work/
+publish/log/
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.*
