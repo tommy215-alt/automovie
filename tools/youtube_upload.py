@@ -1,6 +1,8 @@
 """YouTube へ予約つきで上げる道具（Python の標準機能だけ。追加のインストールなし）。
 
-  python tools/youtube_upload.py auth                      最初の 1 回。ブラウザで許可する（ユーザー本人が実行する）
+  python tools/youtube_upload.py setup                     最初の 1 回。画面を順に開いて案内する（「YouTubeの設定を始める.bat」でも同じ）
+  python tools/youtube_upload.py status                    予約ずみの本数と、次に空いている 18:00 の枠
+  python tools/youtube_upload.py auth                      許可だけやり直す。ブラウザで許可する（ユーザー本人が実行する）
   python tools/youtube_upload.py check                     いまつながっているチャンネルを表示する
   python tools/youtube_upload.py upload videos/004 --at "2026-11-12 21:00" --dry-run   送る中身を見るだけ
   python tools/youtube_upload.py upload videos/004 --at "2026-11-12 21:00"            予約つきで上げる
@@ -134,6 +136,61 @@ def guard_channel(tok):
     return now
 
 
+def booked():
+    return [json.loads(f.read_text(encoding="utf-8")) for f in LOG.glob("*.json")] if LOG.exists() else []
+
+
+def status():
+    """予約ずみで未公開の本数と、次に空いている 18:00 の枠を表示する（毎日の自動実行が読む）。"""
+    now = datetime.datetime.now(JST)
+    fut = sorted(r["publishAt"] for r in booked()
+                 if datetime.datetime.strptime(r["publishAt"], "%Y-%m-%d %H:%M").replace(tzinfo=JST) > now)
+    d = now.date() if now.hour < 17 else now.date() + datetime.timedelta(days=1)
+    while f"{d} 18:00" in fut:
+        d += datetime.timedelta(days=1)
+    print(json.dumps({"connected": TOKEN.exists() and CHANNEL.exists(), "booked_not_yet_public": len(fut),
+                      "booked": fut, "next_free_slot": f"{d} 18:00", "max_booked": 10}, ensure_ascii=False))
+
+
+def setup():
+    """設定の案内役。画面を 1 つずつ開き、Enter で次へ進む。ユーザー本人がターミナルで実行する。"""
+    def step(n, title, url, lines):
+        print(f"\n━━ 手順 {n}／6：{title} ━━")
+        for ln in lines:
+            print("  ・" + ln)
+        if url:
+            webbrowser.open(url)
+        input("  できたら Enter を押す → ")
+
+    print("automovie の YouTube 自動アップロードの設定を始めます（無料・15 分ほど）。\n"
+          "ブラウザは必ず【automovie 用の新しいチャンネルの Google アカウント】でログインしておいてください。")
+    step(1, "YouTube のチャンネルを作る", "https://www.youtube.com/account",
+         ["開いた画面で「チャンネルを作成」があれば押して、名前を決める", "もうチャンネルがあれば何もしなくてよい"])
+    step(2, "Google Cloud のプロジェクトを作る", "https://console.cloud.google.com/projectcreate",
+         ["プロジェクト名に automovie と入れて「作成」を押す", "規約の画面が出たら、読んで同意する"])
+    step(3, "YouTube の API を使えるようにする", "https://console.cloud.google.com/apis/library/youtube.googleapis.com",
+         ["上の帯で、プロジェクトが automovie になっているか見る", "青い「有効にする」を押す"])
+    step(4, "アプリの名前を登録する", "https://console.cloud.google.com/auth/overview",
+         ["「開始」を押す", "アプリ名：automovie ／ メール：自分のアドレスを選ぶ", "対象：「外部」を選ぶ",
+          "連絡先：自分のアドレス → 同意にチェック →「作成」",
+          "左の「対象」を開き、「アプリを公開」→「確認」を押す（これをしないと 7 日ごとに止まる）"])
+    step(5, "鍵のファイルを作る", "https://console.cloud.google.com/auth/clients/create",
+         ["アプリケーションの種類：「デスクトップ アプリ」を選ぶ", "名前はそのままでよい →「作成」",
+          "出てきた画面の「JSON をダウンロード」を押す（ダウンロード フォルダに入る）"])
+    dl = Path.home() / "Downloads"
+    cands = sorted(dl.glob("client_secret*.json"), key=lambda f: f.stat().st_mtime, reverse=True)
+    if not SECRET.exists():
+        if not cands:
+            die(f"ダウンロード フォルダ（{dl}）に client_secret で始まるファイルが見つからない。手順 5 のダウンロードをやり直して、もう一度この案内を実行する")
+        cands[0].replace(SECRET)
+        print(f"\n  鍵のファイルを所定の場所へ移しました（{SECRET}）。中身は誰にも見せないでください。")
+    print("\n━━ 手順 6／6：許可する ━━\n  ・ブラウザが開くので、新しいチャンネルのアカウントを選ぶ\n"
+          "  ・「このアプリは Google で確認されていません」と出たら「詳細」→「automovie（安全ではないページ）に移動」\n"
+          "  ・チェックを 2 つとも入れて「続行」")
+    auth()
+    print("\n設定は終わりです。Claude に「設定した」と伝えてください。")
+
+
 def read_meta(vdir):
     md = (vdir / "youtube_metadata.md").read_text(encoding="utf-8")
 
@@ -160,6 +217,8 @@ def upload(vdir, at, dry):
     qa = vdir / "qa.md"
     if not qa.exists() or "- [ ]" in qa.read_text(encoding="utf-8"):
         die(f"{qa} に未チェックの項目がある（検査を全部通した回だけ上げる）")
+    if any(r.get("publishAt") == at for r in booked()):
+        die(f"{at} にはもう別の回を予約してある")
     if (LOG / f"{code}.json").exists():
         die(f"{code} はもう上げてある（publish/log/{code}.json）")
     when = datetime.datetime.strptime(at, "%Y-%m-%d %H:%M").replace(tzinfo=JST)
@@ -201,13 +260,17 @@ def upload(vdir, at, dry):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["auth", "check", "upload"])
+    ap.add_argument("cmd", choices=["setup", "auth", "check", "status", "upload"])
     ap.add_argument("dir", nargs="?")
     ap.add_argument("--at", help='公開の時刻（日本時間） "YYYY-MM-DD HH:MM"')
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     PUB.mkdir(exist_ok=True)
-    if a.cmd == "auth":
+    if a.cmd == "setup":
+        setup()
+    elif a.cmd == "status":
+        status()
+    elif a.cmd == "auth":
         auth()
     elif a.cmd == "check":
         print(json.dumps(guard_channel(access_token()), ensure_ascii=False))

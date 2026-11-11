@@ -3,6 +3,7 @@
 python tools/collect_shorts.py search   検索結果から 題名・再生数・ID を集める → research/data/shorts_raw.json
 python tools/collect_shorts.py detail   再生数の多い順に、各ショートのページから チャンネル・公開日・尺・説明文 を足す
 python tools/collect_shorts.py export   research/data/shorts.csv に書き出す
+python tools/collect_shorts.py weekly   週に 1 度の収集を全部まとめて行う（2,000 本以上。30〜40 分かかる）
 
 ログインも API キーも使わない。1 回ごとに間をあけてゆっくり読む。
 """
@@ -34,6 +35,12 @@ QUERIES = {
                 "職人技 shorts", "ドライブレコーダー shorts", "すごい人 shorts", "世界のすごい shorts", "スカッとする話 shorts"],
     "解説・雑学": ["雑学 shorts", "海外の反応 shorts", "宇宙 shorts", "動物 雑学 shorts", "ランキング shorts",
                "世界の国 比較 shorts", "歴史 雑学 shorts", "都市伝説 shorts", "お金 雑学 shorts", "心理学 shorts"],
+    "追加（週次で 2,000 本以上にするため）": [
+        "救助 感動 shorts", "消防士 救助 shorts", "警察官 感動 shorts", "軍人 帰還 サプライズ shorts", "犬 感動 shorts",
+        "野生動物 衝撃 shorts", "海の生き物 shorts", "自然 絶景 shorts", "宇宙 映像 shorts", "ロケット 打ち上げ shorts",
+        "災害 映像 shorts", "台風 映像 shorts", "飛行機 着陸 shorts", "戦闘機 shorts", "船 嵐 shorts",
+        "ヘリコプター 救助 shorts", "沿岸警備隊 shorts", "子供 優しい shorts", "親切 海外 shorts", "ヒーロー 一般人 shorts",
+        "昔の映像 shorts", "歴史 映像 カラー化 shorts", "工場 製造 shorts", "巨大 重機 shorts", "天気 雷 shorts"],
 }
 
 
@@ -152,6 +159,21 @@ def sound(limit=250):
     save(db)
 
 
+def weekly():
+    """週に 1 度の収集。前回のデータを日付つきで残し、新しく集め直す。"""
+    import datetime
+    if RAW.exists():
+        RAW.replace(DATA / f"shorts_raw_until_{datetime.date.today()}.json")
+    search()
+    n = len(load())
+    print("集めた本数", n, flush=True)
+    detail(limit=700)
+    sound(limit=250)
+    export()
+    if n < 2000:
+        print(f"注意：{n} 本で、目標の 2,000 本に足りない。QUERIES に検索語を足す")
+
+
 def export():
     db = load()
     rows = sorted(db.values(), key=lambda v: -(v.get("views") or 0))
@@ -167,4 +189,4 @@ def export():
 
 
 if __name__ == "__main__":
-    {"search": search, "detail": detail, "sound": sound, "export": export}[sys.argv[1]]()
+    {"search": search, "detail": detail, "sound": sound, "export": export, "weekly": weekly}[sys.argv[1]]()
