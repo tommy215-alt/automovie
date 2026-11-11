@@ -1,8 +1,8 @@
 {
   "updated": "2026-11-12 00:10",
   "videos": [
-    {"code": "004", "title": "崖から90m落ちた犬を、ヘリで救った隊員たち", "stage": "予約待ち", "when": "完成・検査すべて ○。YouTube チャンネルができしだい、次に空いている 18:00 の枠へ予約", "note": "BGM は Heartwarming（CC BY 4.0）"},
+    {"code": "004", "title": "崖から90m落ちた犬を、ヘリで救った隊員たち", "stage": "予約済み", "when": "11-12 18:00 公開（日本時間）", "note": "チャンネル「世界の60秒」に予約ずみ。https://www.youtube.com/shorts/vL-jVrM7viI 。API からの初めての投稿なので、18:00 に本当に公開されるかを確かめる"},
     {"code": "001", "title": "（不採用）ボイジャー1号の解説", "stage": "修正中", "when": "作り直さない", "note": "11-11 ユーザーが不採用とした。002・003 の旧企画も保留"}
   ],
-  "blocked": "Google の許可は済んだが、そのアカウントに YouTube チャンネルがまだない（アカウントとチャンネルは別）。ユーザーが YouTube で「チャンネルを作成」→ `python tools/youtube_upload.py link` で記録すれば予約できる。許可はテスト状態なので 7 日ごと（次は 11-18 ごろ）に `auth` のやり直しが必要。名前とアイコンの案は docs/CHANNEL.md。RE:VERSE には絶対に載せない"
+  "blocked": "止まっていない。投稿先はチャンネル「世界の60秒」（publish/channel.json）。許可はテスト状態なので 7 日で切れる（11-18 ごろ）→ ユーザーが `python C:\\Users\\Duncan_Tommy21\\automovie\\tools\\youtube_upload.py auth` を実行し直す。毎日 10:00 ごろに 1 本制作→18:00 予約、毎週月曜 7:00 ごろに分析。RE:VERSE には絶対に載せない"
 }
