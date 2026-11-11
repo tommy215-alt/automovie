@@ -157,12 +157,12 @@ def export():
     rows = sorted(db.values(), key=lambda v: -(v.get("views") or 0))
     with open(DATA / "shorts.csv", "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["順位", "再生数", "題名", "チャンネル", "公開日", "秒", "分類（検索の系統）", "URL", "検索語", "タグ", "説明文（先頭）"])
+        w.writerow(["順位", "再生数", "題名", "チャンネル", "公開日", "秒", "分類（検索の系統）", "URL", "検索語", "タグ", "説明文（先頭）", "使用曲（ページの表示）"])
         for i, v in enumerate(rows, 1):
             w.writerow([i, v.get("views_exact") or v.get("views"), v["title"], v.get("channel", ""), v.get("published", ""),
                         v.get("seconds", ""), v["category"], "https://www.youtube.com/shorts/" + v["id"],
                         " / ".join(v["queries"]), " ".join(v.get("keywords", [])),
-                        (v.get("description", "") or "").replace("\n", " ")[:200]])
+                        (v.get("description", "") or "").replace("\n", " ")[:200], v.get("sound", "")])
     print("shorts.csv", len(rows), "本")
 
 
