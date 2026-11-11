@@ -14,3 +14,7 @@ __pycache__/
 *.pyc
 .env
 .env.*
+
+# 認証の情報は絶対に git に入れない
+publish/client_secret*.json
+publish/token.json
