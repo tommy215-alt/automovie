@@ -34,6 +34,7 @@
      "say": "元日から飛んだ隊員たちに、拍手です。",
      "subs": ["元日から飛んだ\n隊員たちに", "拍手です"]}
   ],
+  "bgm": {"file": "assets/bgm_heartwarming.mp3", "db": -17},
   "source": "assets/uscg_leo.webm",
   "crop": "1080:1100:0:410",
   "blocks": [
