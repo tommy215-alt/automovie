@@ -18,7 +18,12 @@
 | 素材 | 出典 | 権利 |
 |---|---|---|
 | ナレーション | VOICEVOX ENGINE 0.26.0、青山龍星（ノーマル） | 個人の利用は「VOICEVOX:青山龍星」のクレジットで商用可。企業として運営する場合は事前確認が必要 |
-| BGM | 自作（`tools/edit_clip.py` で数式から合成） | 自分たちの著作物 |
+| BGM（A 版）`assets/bgm_heartwarming.mp3` | 「Heartwarming」Kevin MacLeod（incompetech.com）。ピアノ独奏、82 BPM、1 分 12 秒。ISRC USUAN1100207。https://incompetech.com/music/royalty-free/mp3-royaltyfree/Heartwarming.mp3 | **CC BY 4.0**（商用・収益化した YouTube 動画で使用可。クレジットが必須）。配布元の FAQ https://incompetech.com/music/royalty-free/faq.html で確認（2026-11-11） |
+| BGM（B 版）`assets/bgm_eternal_hope.mp3` | 「Eternal Hope」Kevin MacLeod（incompetech.com）。ピアノと弦、4 分 44 秒（冒頭 39 秒を使用）。ISRC USUAN1100238。https://incompetech.com/music/royalty-free/mp3-royaltyfree/Eternal%20Hope.mp3 | 同上（CC BY 4.0） |
+| （旧）自作の BGM | `tools/edit_clip.py` で数式から合成。11-11 に上の曲へ差し替え | 自分たちの著作物 |
+
+BGM の加工：必要な長さに切る、音量を声より 17 dB 下げる、出だしと終わりをフェード。
+選び方：上位のショートの使用曲の名前を集めたところ、感動の系統はピアノ中心のバラード（Uru、Kiroro「未来へ」など市販の曲）だった。同じ曲は使えないので、配布元の説明（楽器・曲調・テンポ）から、あたたかいピアノの曲を 2 つ選んだ。**耳では聞いていない。A・B のどちらにするかはユーザーが聞いて決める。**
 
 ## 自作
 題・字幕・出典の文字（フォント：Noto Sans JP、SIL OFL）。
@@ -32,3 +37,5 @@
 
 ## 説明欄に書くクレジット
 映像：U.S. Coast Guard（パブリックドメイン）／音声：VOICEVOX:青山龍星
+音楽（A 版の場合）：Heartwarming Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 https://creativecommons.org/licenses/by/4.0/
+音楽（B 版の場合）：Eternal Hope Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 https://creativecommons.org/licenses/by/4.0/

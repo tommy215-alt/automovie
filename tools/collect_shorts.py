@@ -129,6 +129,29 @@ def detail(limit=700, min_views=100000):
     save(db)
 
 
+SOUND_RE = re.compile(r"titleFormatted\\x22:\\x7b\\x22content\\x22:\\x22((?:(?!\\x22\\x7d).)*)\\x22\\x7d,\\x22iconImage\\x22:"
+                      r"\\x7b\\x22clientResource\\x22:\\x7b\\x22imageName\\x22:\\x22MUSIC_NOTE_SYMBOL")
+
+
+def sound(limit=250):
+    """再生数の多い順に、各ショートのページに出ている使用曲の名前を足す（曲そのものは取得しない）。"""
+    db = load()
+    todo = sorted((v for v in db.values() if "sound" not in v), key=lambda v: -(v.get("views") or 0))[:limit]
+    for i, v in enumerate(todo):
+        try:
+            h = get("https://www.youtube.com/shorts/" + v["id"] + "?hl=ja&gl=JP")
+            m = SOUND_RE.search(h)
+            s = m.group(1) if m else ""
+            v["sound"] = re.sub(r"\\x([0-9a-f]{2})", lambda g: chr(int(g.group(1), 16)), s).encode("latin-1", "ignore").decode("utf-8", "ignore") if "\\x" in s else s
+        except Exception as e:
+            print("失敗", v["id"], str(e)[:80], flush=True)
+        if i % 25 == 0:
+            print(i, "/", len(todo), flush=True)
+            save(db)
+        time.sleep(1.0)
+    save(db)
+
+
 def export():
     db = load()
     rows = sorted(db.values(), key=lambda v: -(v.get("views") or 0))
@@ -144,4 +167,4 @@ def export():
 
 
 if __name__ == "__main__":
-    {"search": search, "detail": detail, "export": export}[sys.argv[1]]()
+    {"search": search, "detail": detail, "sound": sound, "export": export}[sys.argv[1]]()

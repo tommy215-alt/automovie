@@ -37,11 +37,20 @@
 - 尺は 30〜45 秒が目安（上位 700 本は 10〜60 秒にほぼ均等）。
 - 元の動画の音は使わない。
 
+## 3b. BGM の入れ方（2026-11-11）
+
+- 仕入れ先：incompetech.com（Kevin MacLeod、**CC BY 4.0**、収益化した YouTube 動画で使用可、クレジット必須）。曲の一覧は `https://incompetech.com/music/royalty-free/pieces.json`（楽器・曲調・テンポ・説明つき）で、ここから系統に合う曲を絞る。
+- 系統ごとの曲調の目安（上位ショートの使用曲の名前から。`tools/collect_shorts.py sound`）：感動＝ピアノ中心のバラード／スポーツ＝勢いのあるポップ・ロック／笑える＝軽快でとぼけた曲（Kevin MacLeod の「Monkeys Spinning Monkeys」が 2,030 万回の動画で使われていた）。
+- 入れ方：`script.json` に `"bgm": {"file": "assets/曲.mp3", "db": -17}`、または `python tools/edit_clip.py videos/NNN audio assets/曲.mp3` → `remux`。声より 17 dB 小さくする。
+- クレジット（説明欄に必須）：`曲名 Kevin MacLeod (incompetech.com) / Licensed under Creative Commons: By Attribution 4.0 / https://creativecommons.org/licenses/by/4.0/`
+- 制作のセッションは音を聞けないので、迷うときは 2 版（A・B）を作ってユーザーに選んでもらう。
+
 ## 4. まだできていないこと・次にやること
 
 | こと | 状態 |
 |---|---|
-| BGM を許諾のある曲に替える | 未着手。いまは自作の合成音。上位のショートの使用曲の名前を集めて曲調をつかみ、近い雰囲気の CC0・CC BY の曲を探す。**私は音を聞けないので、最終の確認はユーザーにお願いする** |
+| BGM を許諾のある曲に替える | 004 は A・B の 2 版を作成ずみ（3b）。ユーザーがどちらかを選ぶのを待っている |
+| YouTube チャンネル | 11-11 ユーザーがアカウントを作成。チャンネルの名前・URL と、最初の数本の上げ方（手で上げるか、仕組みを作るか）は未定 |
 | 許諾のある映像の仕入れ先を増やす | Commons の米沿岸警備隊の映像が数本あるだけ。DVIDS（米軍）、NASA、官公庁、Pexels・Pixabay、CC BY の投稿者などを調べる。スポーツの名場面はこの範囲ではまず作れない |
 | 編集の型の観察を増やす | 画面で見られたのは 1 本だけ |
 | アップロードの仕組み | 未作成。チャンネルができてから |

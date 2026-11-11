@@ -3,6 +3,8 @@
 python tools/edit_clip.py videos/004 base     素材を切って並べる（work/base.mp4、音なし）
 python tools/edit_clip.py videos/004 audio    自作 BGM と声を混ぜて −14 LUFS にする（work/mix.wav）
 python tools/edit_clip.py videos/004 stills 1,5,12   文字を重ねたコマを work/stills/ に出す
+python tools/edit_clip.py videos/004 audio assets/曲.mp3   その曲を BGM にして混ぜる（script.json の bgm でも指定できる）
+python tools/edit_clip.py videos/004 remux [_b]   映像はそのまま音だけ差し替える
 python tools/edit_clip.py videos/004 render   完成版を書き出す（videos/NNN/NNN.mp4）
 
 script.json：title（2 行）、credit、source、crop、blocks（from＝その行から、src＝素材の [開始, 終了] 秒）。
@@ -104,7 +106,7 @@ class Job:
         return im
 
     # ---- 音 ----
-    def audio(self):
+    def audio(self, bgm_file=None):
         with wave.open(str(self.work / "voice.wav")) as w:
             v = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float32) / 32768
         n = len(v)
@@ -135,8 +137,28 @@ class Job:
                 f = chords[i % 4][(beat * 2 + 1) % 4] * 2
                 bgm[j0:j0 + mm] += 2.4 * np.exp(-xx * 3.5) * (np.sin(2 * np.pi * f * xx) + 0.4 * np.sin(2 * np.pi * 2 * f * xx))
         bgm /= np.max(np.abs(bgm))
+        level = 0.11
+        cfg = self.sc.get("bgm")
+        if bgm_file or cfg:                       # 許諾のある曲を使う（script.json の bgm、または引数）
+            path = self.dir / (bgm_file or cfg["file"])
+            raw = subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", str(path), "-f", "f32le",
+                                  "-ac", "1", "-ar", str(SR), "-"], capture_output=True, check=True).stdout
+            m = np.frombuffer(raw, dtype=np.float32)
+            start = (cfg or {}).get("start") if not bgm_file else None
+            if start is None:                     # 冒頭の無音をとばす
+                win = SR // 10
+                rms = np.sqrt(np.mean(m[:len(m) // win * win].reshape(-1, win) ** 2, axis=1))
+                start = max(0.0, float(np.argmax(rms > 0.25 * np.median(rms[rms > 0]))) * 0.1 - 0.1)
+            m = m[int(start * SR):]
+            if len(m) < n:                        # 足りなければくり返す
+                m = np.tile(m, n // len(m) + 1)
+            bgm = m[:n].copy()
+            vr = np.sqrt(np.mean(v[np.abs(v) > 0.02] ** 2))
+            bgm *= vr / np.sqrt(np.mean(bgm ** 2))                      # 声と同じ大きさにそろえてから
+            level = 10 ** (((cfg or {}).get("db", -17)) / 20) / 0.9     # 声より 17 dB 小さくする
+            print(f"BGM: {path.name} の {start:.1f} 秒から、声より {(cfg or {}).get('db', -17)} dB")
         fade = np.clip(tt / 0.3, 0, 1) * np.clip((n / SR - tt) / 0.8, 0, 1)
-        mix = v * 0.9 + bgm * 0.11 * fade
+        mix = v * 0.9 + bgm * level * fade
         mix = np.clip(mix / max(1.0, np.max(np.abs(mix))), -1, 1)
         pre = self.work / "premix.wav"
         with wave.open(str(pre), "wb") as w:
@@ -184,7 +206,17 @@ if __name__ == "__main__":
     if cmd == "base":
         job.base()
     elif cmd == "audio":
-        job.audio()
+        job.audio(sys.argv[3] if len(sys.argv) > 3 else None)
+    elif cmd == "remux":                      # 映像はそのまま、音だけ差し替える（別名で出すなら 3 番目に接尾辞）
+        suf = sys.argv[3] if len(sys.argv) > 3 else ""
+        src = job.dir / f"{job.dir.name}.mp4"
+        out = job.dir / f"{job.dir.name}{suf}.mp4"
+        tmp = job.work / "remux_tmp.mp4"
+        subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(src), "-i", str(job.work / "mix.wav"),
+                        "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
+                        "-t", f"{job.total:.3f}", "-movflags", "+faststart", str(tmp)], check=True)
+        tmp.replace(out)
+        print("音を差し替えた", out)
     elif cmd == "stills":
         job.stills([float(x) for x in sys.argv[3].split(",")])
     elif cmd == "render":
