@@ -43,7 +43,7 @@ def die(msg):
     sys.exit(1)
 
 
-def http(method, url, data=None, headers=None):
+def call(method, url, data=None, headers=None):
     req = urllib.request.Request(url, data=data, method=method, headers=headers or {})
     try:
         with urllib.request.urlopen(req, timeout=300) as r:
@@ -87,7 +87,7 @@ def auth():
         srv.handle_request()
     if got.get("state") != state or "code" not in got:
         die("許可が得られなかった：" + str(got.get("error")))
-    st, _, body = http("POST", "https://oauth2.googleapis.com/token", urllib.parse.urlencode({
+    st, _, body = call("POST", "https://oauth2.googleapis.com/token", urllib.parse.urlencode({
         "code": got["code"], "client_id": c["client_id"], "client_secret": c["client_secret"],
         "redirect_uri": redirect, "grant_type": "authorization_code"}).encode())
     tok = json.loads(body)
@@ -106,7 +106,7 @@ def access_token():
     if not TOKEN.exists():
         die("まだ許可していない。python tools/youtube_upload.py auth を実行する")
     c = client()
-    st, _, body = http("POST", "https://oauth2.googleapis.com/token", urllib.parse.urlencode({
+    st, _, body = call("POST", "https://oauth2.googleapis.com/token", urllib.parse.urlencode({
         "client_id": c["client_id"], "client_secret": c["client_secret"], "grant_type": "refresh_token",
         "refresh_token": json.loads(TOKEN.read_text(encoding="utf-8"))["refresh_token"]}).encode())
     if st != 200:
@@ -115,7 +115,7 @@ def access_token():
 
 
 def my_channel(tok):
-    st, _, body = http("GET", "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+    st, _, body = call("GET", "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
                        headers={"Authorization": "Bearer " + tok})
     items = json.loads(body).get("items") or []
     if st != 200 or not items:
@@ -237,14 +237,14 @@ def upload(vdir, at, dry):
     tok = access_token()
     ch = guard_channel(tok)
     data = mp4.read_bytes()
-    st, hd, b = http("POST", "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&notifySubscribers=true",
+    st, hd, b = call("POST", "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&notifySubscribers=true",
                      json.dumps(body).encode("utf-8"),
                      {"Authorization": "Bearer " + tok, "Content-Type": "application/json; charset=UTF-8",
                       "X-Upload-Content-Type": "video/mp4", "X-Upload-Content-Length": str(len(data))})
     loc = hd.get("Location") or hd.get("location")
     if st != 200 or not loc:
         die("上げ始められなかった：" + b.decode("utf-8", "replace")[:500])
-    st, _, b = http("PUT", loc, data, {"Authorization": "Bearer " + tok, "Content-Type": "video/mp4"})
+    st, _, b = call("PUT", loc, data, {"Authorization": "Bearer " + tok, "Content-Type": "video/mp4"})
     if st not in (200, 201):
         die("送信に失敗：" + b.decode("utf-8", "replace")[:500])
     v = json.loads(b)
