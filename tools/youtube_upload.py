@@ -102,6 +102,15 @@ def auth():
     print(f"つながったチャンネル：{ch['title']}（{ch['id']}）。publish/channel.json に記録した。以後、このチャンネルにだけ上げる")
 
 
+def link():
+    """許可は済んでいるが、チャンネルの記録がないとき用。いまつながっているチャンネルを記録する。"""
+    ch = my_channel(access_token())
+    if FORBIDDEN.search(ch["title"]):
+        die(f"つながったのは「{ch['title']}」。RE:VERSE には上げない決まりなので記録しない")
+    CHANNEL.write_text(json.dumps(ch, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"つながったチャンネル：{ch['title']}（{ch['id']}）。publish/channel.json に記録した")
+
+
 def access_token():
     if not TOKEN.exists():
         die("まだ許可していない。python tools/youtube_upload.py auth を実行する")
@@ -260,7 +269,7 @@ def upload(vdir, at, dry):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["setup", "auth", "check", "status", "upload"])
+    ap.add_argument("cmd", choices=["setup", "auth", "link", "check", "status", "upload"])
     ap.add_argument("dir", nargs="?")
     ap.add_argument("--at", help='公開の時刻（日本時間） "YYYY-MM-DD HH:MM"')
     ap.add_argument("--dry-run", action="store_true")
@@ -272,6 +281,8 @@ if __name__ == "__main__":
         status()
     elif a.cmd == "auth":
         auth()
+    elif a.cmd == "link":
+        link()
     elif a.cmd == "check":
         print(json.dumps(guard_channel(access_token()), ensure_ascii=False))
     else:
