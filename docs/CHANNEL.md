@@ -31,3 +31,8 @@
 ## ハンドル（@〜）の案
 
 `@sekai60byo`、`@sekai-60s`（空いているものを選ぶ）
+
+## ヘッダー（バナー）
+
+`channel/banner.png`（2560×1440、YouTube の推奨の大きさ）。名前・マーク・ひとことは、どの端末でも見える中央の範囲（1546×423）に収めてある。見え方の確認は `channel/banner_preview.png`（赤い枠がスマホ・PC で見える範囲）。作り直すときは `python tools/make_banner.py`。自作で、他人の素材は使っていない。
+設定は YouTube Studio →「カスタマイズ」→「バナー画像」（ユーザーの操作）。
