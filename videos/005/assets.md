@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | noaa_irma_eye.webm | ハリケーン・イルマの目に入る観測機「カーミット」（NOAA42）の窓からの映像。74 秒、1920×1080、2017-09-07 公開 | The NOAA Hurricane Hunters（撮影：Nick Underwood, NOAA） | **パブリックドメイン**（米国連邦政府の機関 NOAA の職員が職務で作った著作物。Commons の表示も Public domain） | https://commons.wikimedia.org/wiki/File:Although_most_of_our_Hurricane_-Irma_flight_videos_display_the_unique_turbule....webm （元は NOAA Hurricane Hunters の公式 Facebook） |
 
-- 加工：横長の映像の中央寄り（1060×1080）を切り出して拡大、色を少し強める、場面ごとに長さを合わせる。順番は元のまま。
+- 加工：横長の映像の中央寄り（1060×1080）を切り出して拡大、色を少し強める、場面ごとに長さを合わせる。冒頭だけ、後半の青空の場面（55.5〜60.3 秒）を先に見せ、そのあとは元の順番。
 - **元の動画の音は使っていない。**
 - NOAA のロゴ・紋章は使っていない。NOAA が推薦しているように見せていない。
 - 取得したが使っていない素材：`noaa_patricia.webm`（ハリケーン・パトリシアの操縦室の映像、Lonnie Kregelka/NOAA、パブリックドメイン、https://commons.wikimedia.org/wiki/File:Hurricane_Patricia_Seen_from_NOAA_Hurricane_Hunter_Aircraft.webm ）。別のハリケーンの映像を混ぜると誤解を招くので使わなかった。

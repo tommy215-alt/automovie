@@ -35,12 +35,12 @@
   "source": "assets/noaa_irma_eye.webm",
   "crop": "1060:1080:250:0",
   "blocks": [
-    {"from": "hook", "src": [[0.3, 7.5]]},
-    {"from": "intro", "src": [[10.0, 22.0]]},
+    {"from": "hook", "src": [[55.5, 60.3]]},
+    {"from": "intro", "src": [[0.3, 9.0]]},
     {"from": "plane", "src": [[24.0, 33.0]]},
     {"from": "wall", "src": [[38.0, 44.5]]},
-    {"from": "eye", "src": [[44.5, 53.0]]},
-    {"from": "stadium", "src": [[53.0, 60.5]]},
+    {"from": "eye", "src": [[44.5, 50.5]]},
+    {"from": "stadium", "src": [[50.5, 55.5]]},
     {"from": "why", "src": [[60.5, 68.0]]},
     {"from": "close", "src": [[68.0, 73.8]]}
   ]
