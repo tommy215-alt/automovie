@@ -7,7 +7,7 @@ python tools/edit_clip.py videos/004 audio assets/曲.mp3   その曲を BGM に
 python tools/edit_clip.py videos/004 remux [_b]   映像はそのまま音だけ差し替える
 python tools/edit_clip.py videos/004 render   完成版を書き出す（videos/NNN/NNN.mp4）
 
-script.json：title（2 行）、credit、source、crop、blocks（from＝その行から、src＝素材の [開始, 終了] 秒）。
+script.json：title（2 行）、credit、source、crop、blocks（from＝その行から、src＝素材の [開始, 終了] 秒、crop＝その場面だけ切り出しの位置を変える（大きさは全体と同じ））。
 素材の音は使わない（元の動画に付いている音楽の権利が分からないため）。
 """
 import json
@@ -62,16 +62,21 @@ class Job:
             segs = [list(s) for s in b["src"]]
             have = sum(e - s for s, e in segs)
             if have > need:                       # 素材が長い → 最後を切る
-                segs[-1][1] -= have - need
+                cut = have - need
+                while segs and cut >= segs[-1][1] - segs[-1][0] - 0.2:   # 最後の区間ごと要らない
+                    cut -= segs[-1][1] - segs[-1][0]
+                    segs.pop()
+                segs[-1][1] -= max(0.0, cut)
                 speed = 1.0
             else:                                 # 素材が短い → ゆっくり再生（最大 0.6 倍速まで）
                 speed = max(0.6, have / need)
             for s, e in segs:
-                parts.append(f"[0:v]trim={s:.3f}:{e:.3f},setpts=(PTS-STARTPTS)/{speed:.4f}[p{n}]")
+                parts.append(f"[0:v]trim={s:.3f}:{e:.3f},setpts=(PTS-STARTPTS)/{speed:.4f},fps={FPS},"
+                             f"crop={b.get('crop', self.sc['crop'])},scale={W}:{self.vh},setsar=1[p{n}]")
                 n += 1
             print(f"{b['from']}: 必要 {need:.2f}s 素材 {have:.2f}s 速さ {speed:.2f}")
         fc = ";".join(parts) + ";" + "".join(f"[p{i}]" for i in range(n)) + (
-            f"concat=n={n}:v=1:a=0,fps={FPS},crop={self.sc['crop']},scale={W}:{self.vh},"
+            f"concat=n={n}:v=1:a=0,fps={FPS},"
             f"eq=contrast=1.06:saturation=1.12,pad={W}:{H}:0:{VID_Y}:black,"
             f"tpad=stop_mode=clone:stop_duration=3,trim=0:{self.total:.3f}[v]")
         subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(self.dir / self.sc["source"]),
