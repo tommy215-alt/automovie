@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | uscg_pikelot.webm | 「Coast Guard, partners rescue three stranded mariners from island in Federated States of Micronesia」（B-Roll - Pikelot Island、58 秒、1920×1080、2020-08-03 公開、ID 200803-G-GO214-1001） | U.S. Coast Guard（Air Station Barbers Point、編集 Petty Officer 3rd Class Matthew West、14th District） | **パブリックドメイン**（米国連邦政府の職員が職務で作った著作物。Commons の表示も Public domain） | https://commons.wikimedia.org/wiki/File:Coast_Guard,_partners_rescue_three_stranded_mariners_from_island_in_Federated_States_of_Micronesia.webm |
 
-- 使った部分：0.4〜6.4 秒（環礁）、8.5〜14.4 秒（島）、19.3〜27.0 秒（機内の画面に映った SOS）、29.0〜33.0 秒（砂浜の SOS）、36.4〜41.6 秒（浜のボート）、42.3〜47.9 秒（物資の投下）、48.2〜53.6 秒（島）。最後の文字だけの画面（54 秒以降）は使っていない。
+- 使った部分：0.4〜6.4 秒（環礁）、8.5〜14.4 秒（島）、19.3〜27.0 秒（機内の画面に映った SOS）、28.0〜31.9 秒（砂浜の SOS）、36.4〜41.6 秒（浜のボート）、42.3〜47.9 秒（物資の投下）、48.2〜53.6 秒（島）。最後の文字だけの画面（54 秒以降）は使っていない。
 - 加工：横長の映像から 1060×1080 を切り出して拡大（場面ごとに位置を変えた）、順番の組み替え、色を少し強める、一部をゆっくり再生。
 - **元の動画の音は使っていない。**
 - 沿岸警備隊のロゴ・紋章は使っていない。沿岸警備隊が推薦しているように見せていない。
