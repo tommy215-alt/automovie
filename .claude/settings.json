@@ -1,50 +1,15 @@
 {
   "permissions": {
     "allow": [
+      "PowerShell",
       "Read",
       "Edit",
       "Write",
       "Glob",
       "Grep",
-      "WebSearch",
       "WebFetch",
-      "PowerShell(python *)",
-      "PowerShell(ffmpeg *)",
-      "PowerShell(ffprobe *)",
-      "PowerShell(git pull*)",
-      "PowerShell(git add *)",
-      "PowerShell(git commit *)",
-      "PowerShell(git push*)",
-      "PowerShell(git status*)",
-      "PowerShell(git log*)",
-      "PowerShell(git diff*)",
-      "PowerShell(Set-Location *)",
-      "PowerShell(cd *)",
-      "PowerShell(Get-Date*)",
-      "PowerShell(Get-Process*)",
-      "PowerShell(Get-CimInstance *)",
-      "PowerShell(Get-Item *)",
-      "PowerShell(Get-ChildItem*)",
-      "PowerShell(Get-Content *)",
-      "PowerShell(Test-Path *)",
-      "PowerShell(New-Item *)",
-      "PowerShell(Copy-Item *)",
-      "PowerShell(Set-Content *)",
-      "PowerShell(Out-File *)",
-      "PowerShell(Start-Sleep *)",
-      "PowerShell(Select-Object *)",
-      "PowerShell(Select-String *)",
-      "PowerShell(Sort-Object*)",
-      "PowerShell(Measure-Object*)",
-      "PowerShell(Where-Object *)",
-      "PowerShell(ForEach-Object *)",
-      "PowerShell(Format-Table*)",
-      "PowerShell(Format-List*)",
-      "PowerShell(Out-String*)",
-      "PowerShell(Out-Null*)",
-      "PowerShell(Write-Output *)",
-      "PowerShell(Invoke-RestMethod *)",
-      "PowerShell(Invoke-WebRequest *)"
+      "WebSearch",
+      "ToolSearch"
     ],
     "deny": [
       "Read(publish/token.json)",
@@ -52,7 +17,9 @@
       "Edit(publish/token.json)",
       "Edit(publish/client_secret*.json)",
       "PowerShell(git push --force*)",
-      "PowerShell(git reset --hard*)"
+      "PowerShell(git push -f*)",
+      "PowerShell(git reset --hard*)",
+      "PowerShell(Format-Volume*)"
     ]
   }
 }
