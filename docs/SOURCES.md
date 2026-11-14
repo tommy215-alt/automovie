@@ -7,7 +7,7 @@
 | 仕入れ先 | 中身 | 権利 | 探し方 | 状態 |
 |---|---|---|---|---|
 | Wikimedia Commons（動画） | 米国の政府機関の映像（沿岸警備隊、軍、NASA、国立公園局、魚類野生生物局）、CC BY／CC0 の投稿 | ファイルごとに表示。Public domain・CC0・CC BY は可。**CC BY-SA は、こちらの動画も同じ条件で公開する義務があるので使わない。** NC・ND は不可 | `python tools/commons_search.py "検索語"` | 使用中（004） |
-| NASA（images.nasa.gov、svs.gsfc.nasa.gov） | ロケット、宇宙、地球の映像 | 原則パブリックドメイン（NASA のロゴ、人物の肖像は別） | サイト内検索。API `https://images-api.nasa.gov/search?q=...&media_type=video` | 未使用 |
+| NASA（images.nasa.gov、svs.gsfc.nasa.gov） | ロケット、宇宙、地球の映像 | 原則パブリックドメイン（NASA のロゴ、人物の肖像は別） | サイト内検索。API `https://images-api.nasa.gov/search?q=...&media_type=video`。Commons に転載ずみの NASA Johnson の 4K 映像（分類「4K NASA videos」「Videos from the NASA Johnson YouTube channel」）は `commons_search.py` で取れる | 使用中（007、Commons 経由） |
 | DVIDS（dvidshub.net） | 米軍の公式映像（帰還、救助、訓練、災害派遣） | 原則パブリックドメイン | ダウンロードに無料の登録が要る → **ユーザーに頼む必要あり**。Commons に転載ずみのものは上の方法で取れる | 未着手 |
 | NOAA、USGS、国立公園局（NPS） | 嵐、火山、野生動物、海の生き物 | 米国政府の著作物はパブリックドメイン（提供者が別の場合あり） | 各サイトの動画ライブラリ、Commons | 未着手 |
 | Pexels、Pixabay | 動物、自然、街、人の映像 | 各サイトのライセンスで商用・改変可（素材だけの再配布は不可） | 自動での取得は API キーが要る → **ユーザーに頼む必要あり**。それまでは使わない | 未着手 |
