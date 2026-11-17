@@ -31,17 +31,17 @@
      "say": "8年間、おつかれさま。これからは、守られる番です。",
      "subs": ["8年間", "おつかれさま", "これからは", "守られる番です"]}
   ],
-  "bgm": {"file": "assets/bgm_americana.mp3", "db": -13},
+  "bgm": {"file": "assets/bgm_americana.mp3", "db": -13, "start": 92.0},
   "source": "assets/usaf_mwd_axel.webm",
   "crop": "1060:1080:390:0",
   "blocks": [
     {"from": "hook", "src": [[25.4, 28.2]], "crop": "1060:1080:250:0"},
     {"from": "intro", "src": [[7.1, 8.7], [14.6, 17.5]]},
     {"from": "job", "src": [[17.7, 21.5]], "crop": "1060:1080:300:0"},
-    {"from": "mission", "src": [[21.7, 25.2]], "crop": "1060:1080:150:0"},
+    {"from": "mission", "src": [[21.7, 25.1]], "crop": "1060:1080:150:0"},
     {"from": "rest", "src": [[35.8, 39.5]]},
     {"from": "adopt", "src": [[45.8, 48.6]], "crop": "1060:1080:0:0"},
     {"from": "life", "src": [[32.2, 35.5]]},
-    {"from": "close", "src": [[48.9, 54.2]], "crop": "1060:1080:250:0"}
+    {"from": "close", "src": [[48.9, 53.8]], "crop": "1060:1080:250:0"}
   ]
 }
